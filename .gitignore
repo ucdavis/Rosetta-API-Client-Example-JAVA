@@ -1,0 +1,47 @@
+# Maven target directory
+/target/
+
+# Eclipse IDE files
+.project
+.classpath
+.settings/
+
+# IntelliJ IDEA files
+*.iml
+.idea/
+out/
+
+# NetBeans IDE files
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# VS Code settings
+.vscode/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Maven wrapper files (optional – only ignore if you don't use them)
+# mvnw
+# mvnw.cmd
+# .mvn/
+
+# Optional: ignore local build output or test reports
+surefire-reports/
+jacoco.exec
+
+# Environment Files
+*.env
+*.env.example
+*.env.local
+*.env.staging
