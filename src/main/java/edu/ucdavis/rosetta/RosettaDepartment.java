@@ -3,17 +3,17 @@ package edu.ucdavis.rosetta;
 public class RosettaDepartment 
 {
 
-    public String Department_ID = "";
-    public String Department_Title = "";
-    public String Department_Short_Title = "";
-    public String Subdivision_ID = "";
-    public String Subdivision_Title = "";
-    public String Subdivision_L4_ID = "";
-    public String Subdivision_L4_Title = "";
-    public String Division_ID = "";
-    public String Division_Title = "";
-    public String Organization_ID = "";
-    public String Organization_Title = "";
+    public String departmentID = "";
+    public String departmentTitle = "";
+    public String departmentShortTitle = "";
+    public String subdivisionID = "";
+    public String subdivisionTitle = "";
+    public String subdivisionL4ID = "";
+    public String subdivisionL4Title = "";
+    public String divisionID = "";
+    public String divisionTitle = "";
+    public String organizationID = "";
+    public String organizationTitle = "";
 
     public RosettaDepartment()
     {

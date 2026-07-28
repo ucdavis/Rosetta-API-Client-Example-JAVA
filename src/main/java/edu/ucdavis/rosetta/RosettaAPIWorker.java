@@ -17,15 +17,15 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public class RosettaAPIWorker {
     
-    public String Base_Url;
-    public String Token_Url;
-    private String _Client_ID;
-    private String _Client_Secret;
-    private String _OAuth_Token;
-    private String _OAuth_Scopes;
-    public String Test_ID;
-    public String Export_Location;
-    public LocalDateTime Expires_In;
+    public String baseUrl;
+    public String tokenUrl;
+    private String _clientID;
+    private String _clientSecret;
+    private String _oauthToken;
+    private String _oauthScopes;
+    public String testID;
+    public String exportLocation;
+    public LocalDateTime expiresIn;
 
     public RosettaAPIWorker()
     {
@@ -33,16 +33,16 @@ public class RosettaAPIWorker {
         Dotenv dotenv = Dotenv.load();
 
         //Load API Information
-        _Client_ID = dotenv.get("ROSETTA_CLIENT_ID");
-        _Client_Secret = dotenv.get("ROSETTA_CLIENT_SECRET");
-        _OAuth_Scopes = dotenv.get("ROSETTA_SCOPES");
-        Base_Url = dotenv.get("ROSETTA_BASE_URL");
-        Token_Url = dotenv.get("ROSETTA_OAUTH_URL");
-        Test_ID = dotenv.get("ROSETTA_TEST_ID");
-        Export_Location = dotenv.get("ROSETTA_EXPORT_LOCATION");
+        _clientID = dotenv.get("ROSETTA_CLIENT_ID");
+        _clientSecret = dotenv.get("ROSETTA_CLIENT_SECRET");
+        _oauthScopes = dotenv.get("ROSETTA_SCOPES");
+        baseUrl = dotenv.get("ROSETTA_BASE_URL");
+        tokenUrl = dotenv.get("ROSETTA_OAUTH_URL");
+        testID = dotenv.get("ROSETTA_TEST_ID");
+        exportLocation = dotenv.get("ROSETTA_EXPORT_LOCATION");
 
         //Configure Intitial Expires In Value
-        Expires_In = LocalDateTime.now().minusHours(1);
+        expiresIn = LocalDateTime.now().minusHours(1);
         
     }
 
@@ -82,7 +82,7 @@ public class RosettaAPIWorker {
         boolean bTokenStatus = true;
 
         //Check Token Expiration
-        if(LocalDateTime.now().plusMinutes(1).isAfter(Expires_In))
+        if(LocalDateTime.now().plusMinutes(1).isAfter(expiresIn))
         {
 
             //HttpClient for API Call to Rosetta API
@@ -94,11 +94,11 @@ public class RosettaAPIWorker {
 
                 //Build Request with Custom Header for OAuth Call
                 HttpRequest raHttpRequest = HttpRequest.newBuilder()
-                        .uri(URI.create(Token_Url))
-                        .header("client_id", _Client_ID)
-                        .header("client_secret", _Client_Secret)
+                        .uri(URI.create(tokenUrl))
+                        .header("client_id", _clientID)
+                        .header("client_secret", _clientSecret)
                         .header("grant_type","CLIENT_CREDENTIALS")
-                        .header("scope",_OAuth_Scopes)
+                        .header("scope",_oauthScopes)
                         .POST(BodyPublishers.noBody())
                         .build();
 
@@ -116,10 +116,10 @@ public class RosettaAPIWorker {
                     if(jnOAuthToken.hasNonNull("access_token") && jnOAuthToken.hasNonNull("expires_in"))
                     {
                         //Load OAuth Access Token
-                        _OAuth_Token = jnOAuthToken.get("access_token").asText();
+                        _oauthToken = jnOAuthToken.get("access_token").asText();
 
                         //Update Expires In Value
-                        Expires_In = LocalDateTime.now().plusSeconds(Long.parseLong(jnOAuthToken.get("expires_in").asText()));
+                        expiresIn = LocalDateTime.now().plusSeconds(Long.parseLong(jnOAuthToken.get("expires_in").asText()));
                     }
                     else
                     {
@@ -151,13 +151,13 @@ public class RosettaAPIWorker {
         //Retrieve Job Type ID
         if(jeJobTypeID.hasNonNull("job_type_id"))
         {
-            rosettaJobTypeID.Job_Type_ID = jeJobTypeID.get("job_type_id").asText();
+            rosettaJobTypeID.jobTypeID = jeJobTypeID.get("job_type_id").asText();
         }
 
         //Retrieve Job Type Description
         if(jeJobTypeID.hasNonNull("job_type_description"))
         {
-            rosettaJobTypeID.Job_Type_Description = jeJobTypeID.get("job_type_description").asText();
+            rosettaJobTypeID.jobTypeDescription = jeJobTypeID.get("job_type_description").asText();
         }
 
         return rosettaJobTypeID;
@@ -171,67 +171,67 @@ public class RosettaAPIWorker {
         //Retrieve Department ID
         if(jeDepartment.hasNonNull("department_id"))
         {
-            rosettaDepartment.Department_ID = jeDepartment.get("department_id").asText();
+            rosettaDepartment.departmentID = jeDepartment.get("department_id").asText();
         }
 
         //Retrieve Department Title
         if(jeDepartment.hasNonNull("department_title"))
         {
-            rosettaDepartment.Department_Title = jeDepartment.get("department_title").asText();
+            rosettaDepartment.departmentTitle = jeDepartment.get("department_title").asText();
         }
 
         //Retrieve Department Short Tiele
         if(jeDepartment.hasNonNull("department_short_title"))
         {
-            rosettaDepartment.Department_Short_Title = jeDepartment.get("department_short_title").asText();
+            rosettaDepartment.departmentShortTitle = jeDepartment.get("department_short_title").asText();
         }
 
         //Retrieve Subdivision ID
         if(jeDepartment.hasNonNull("subdivision_id"))
         {
-            rosettaDepartment.Subdivision_ID = jeDepartment.get("subdivision_id").asText();
+            rosettaDepartment.subdivisionID = jeDepartment.get("subdivision_id").asText();
         }
 
         //Retrieve Subdivision Title
         if(jeDepartment.hasNonNull("subdivision_title"))
         {
-            rosettaDepartment.Subdivision_Title = jeDepartment.get("subdivision_title").asText();
+            rosettaDepartment.subdivisionTitle = jeDepartment.get("subdivision_title").asText();
         }
 
         //Retrieve Subdivision L4 ID
         if(jeDepartment.hasNonNull("subdivision_l4_id"))
         {
-            rosettaDepartment.Subdivision_L4_ID = jeDepartment.get("subdivision_l4_id").asText();
+            rosettaDepartment.subdivisionL4ID = jeDepartment.get("subdivision_l4_id").asText();
         }
 
         //Retrieve Subdivision L4 Title
         if(jeDepartment.hasNonNull("subdivision_l4_title"))
         {
-            rosettaDepartment.Subdivision_L4_Title = jeDepartment.get("subdivision_l4_title").asText();
+            rosettaDepartment.subdivisionL4Title = jeDepartment.get("subdivision_l4_title").asText();
         }
 
         //Retrieve Division ID
         if(jeDepartment.hasNonNull("division_id"))
         {
-            rosettaDepartment.Division_ID = jeDepartment.get("division_id").asText();
+            rosettaDepartment.divisionID = jeDepartment.get("division_id").asText();
         }
 
         //Retrieve Division Title
         if(jeDepartment.hasNonNull("division_title"))
         {
-            rosettaDepartment.Division_Title = jeDepartment.get("division_title").asText();
+            rosettaDepartment.divisionTitle = jeDepartment.get("division_title").asText();
         }
 
         //Retrieve Organization ID
         if(jeDepartment.hasNonNull("organization_id"))
         {
-            rosettaDepartment.Organization_ID = jeDepartment.get("organization_id").asText();
+            rosettaDepartment.organizationID = jeDepartment.get("organization_id").asText();
         }
 
         //Retrieve Organization Title
         if(jeDepartment.hasNonNull("organization_title"))
         {
-            rosettaDepartment.Organization_Title = jeDepartment.get("organization_title").asText();
+            rosettaDepartment.organizationTitle = jeDepartment.get("organization_title").asText();
         }
 
         return rosettaDepartment;
@@ -245,37 +245,37 @@ public class RosettaAPIWorker {
         //Retrieve College Code
         if(jeStudentAssocShrt.hasNonNull("college_code"))
         {
-            rosettaStudentAssoc.College_Code = jeStudentAssocShrt.get("college_code").asText();
+            rosettaStudentAssoc.collegeCode = jeStudentAssocShrt.get("college_code").asText();
         }
 
         //Retrieve College Title 
         if(jeStudentAssocShrt.hasNonNull("college_title"))
         {
-            rosettaStudentAssoc.College_Title = jeStudentAssocShrt.get("college_title").asText();
+            rosettaStudentAssoc.collegeTitle = jeStudentAssocShrt.get("college_title").asText();
         }
 
         //Retrieve Major Code
         if(jeStudentAssocShrt.hasNonNull("major_code"))
         {
-            rosettaStudentAssoc.Major_Code = jeStudentAssocShrt.get("major_code").asText();
+            rosettaStudentAssoc.majorCode = jeStudentAssocShrt.get("major_code").asText();
         }
 
         //Retrieve Major Title
         if(jeStudentAssocShrt.hasNonNull("major_title"))
         {
-            rosettaStudentAssoc.Major_Title = jeStudentAssocShrt.get("major_title").asText();
+            rosettaStudentAssoc.majorTitle = jeStudentAssocShrt.get("major_title").asText();
         }
 
         //Retrieve Academic Level
         if(jeStudentAssocShrt.hasNonNull("academic_level"))
         {
-            rosettaStudentAssoc.Academic_Level = jeStudentAssocShrt.get("academic_level").asText();
+            rosettaStudentAssoc.academicLevel = jeStudentAssocShrt.get("academic_level").asText();
         }
 
         //Retrieve Class Level
         if(jeStudentAssocShrt.hasNonNull("class_level"))
         {
-            rosettaStudentAssoc.Class_Level = jeStudentAssocShrt.get("class_level").asText();
+            rosettaStudentAssoc.classLevel = jeStudentAssocShrt.get("class_level").asText();
         }
 
         return rosettaStudentAssoc;
@@ -289,61 +289,61 @@ public class RosettaAPIWorker {
         //Retrieve IAM ID
         if(jeStudentAssoc.hasNonNull("iam_id"))
         {
-            rosettaStudentAssoc.IAM_ID = jeStudentAssoc.get("iam_id").asText();
+            rosettaStudentAssoc.iamID = jeStudentAssoc.get("iam_id").asText();
         }
 
         //Retrieve Student ID
         if(jeStudentAssoc.hasNonNull("student_id"))
         {
-            rosettaStudentAssoc.Student_ID = jeStudentAssoc.get("student_id").asText();
+            rosettaStudentAssoc.studentID = jeStudentAssoc.get("student_id").asText();
         }
 
         //Retrieve PIDM
         if(jeStudentAssoc.hasNonNull("pidm"))
         {
-            rosettaStudentAssoc.PIDM = jeStudentAssoc.get("pidm").asText();
+            rosettaStudentAssoc.pidm = jeStudentAssoc.get("pidm").asText();
         }
 
         //Retrieve College Code
         if(jeStudentAssoc.hasNonNull("college_code"))
         {
-            rosettaStudentAssoc.College_Code = jeStudentAssoc.get("college_code").asText();
+            rosettaStudentAssoc.collegeCode = jeStudentAssoc.get("college_code").asText();
         }
 
         //Retrieve College Title 
         if(jeStudentAssoc.hasNonNull("college_title"))
         {
-            rosettaStudentAssoc.College_Title = jeStudentAssoc.get("college_title").asText();
+            rosettaStudentAssoc.collegeTitle = jeStudentAssoc.get("college_title").asText();
         }
 
         //Retrieve Major Code
         if(jeStudentAssoc.hasNonNull("major_code"))
         {
-            rosettaStudentAssoc.Major_Code = jeStudentAssoc.get("major_code").asText();
+            rosettaStudentAssoc.majorCode = jeStudentAssoc.get("major_code").asText();
         }
 
         //Retrieve Major Title
         if(jeStudentAssoc.hasNonNull("major_title"))
         {
-            rosettaStudentAssoc.Major_Title = jeStudentAssoc.get("major_title").asText();
+            rosettaStudentAssoc.majorTitle = jeStudentAssoc.get("major_title").asText();
         }
 
         //Retrieve Level Affiliation Code
         if(jeStudentAssoc.hasNonNull("lvl_affiliation_code"))
         {
-            rosettaStudentAssoc.Level_Affiliation_Code = jeStudentAssoc.get("lvl_affiliation_code").asText();
+            rosettaStudentAssoc.levelAffiliationCode = jeStudentAssoc.get("lvl_affiliation_code").asText();
         }
 
         //Retrieve Class Affiliation Code
         if(jeStudentAssoc.hasNonNull("cls_affiliation_code"))
         {
-            rosettaStudentAssoc.Class_Affiliation_Code = jeStudentAssoc.get("cls_affiliation_code").asText();
+            rosettaStudentAssoc.classAffiliationCode = jeStudentAssoc.get("cls_affiliation_code").asText();
         }
 
         //Retrieve Rank
         if(jeStudentAssoc.hasNonNull("rank"))
         {
-            rosettaStudentAssoc.Rank = jeStudentAssoc.get("rank").asText();
+            rosettaStudentAssoc.rank = jeStudentAssoc.get("rank").asText();
         }
 
         return rosettaStudentAssoc;
@@ -357,194 +357,194 @@ public class RosettaAPIWorker {
         //Retrieve IAM ID
         if(jeEmploymentAssoc.hasNonNull("iam_id"))
         {
-            rosettaEmplAssoc.IAM_ID = jeEmploymentAssoc.get("iam_id").asText();
+            rosettaEmplAssoc.iamID = jeEmploymentAssoc.get("iam_id").asText();
         }
 
         //Retrieve Employee Record
         if(jeEmploymentAssoc.hasNonNull("employee_record"))
         {
-            rosettaEmplAssoc.Employee_Record = jeEmploymentAssoc.get("employee_record").asText();
+            rosettaEmplAssoc.employeeRecord = jeEmploymentAssoc.get("employee_record").asText();
         }
 
         //Retrieve Employee ID
         if(jeEmploymentAssoc.hasNonNull("employee_id"))
         {
-            rosettaEmplAssoc.Employee_ID = jeEmploymentAssoc.get("employee_id").asText();
+            rosettaEmplAssoc.employeeID = jeEmploymentAssoc.get("employee_id").asText();
         }
 
         //Retrieve Position Number
         if(jeEmploymentAssoc.hasNonNull("position_number"))
         {
-            rosettaEmplAssoc.Position_Number = jeEmploymentAssoc.get("position_number").asText();
+            rosettaEmplAssoc.positionNumber = jeEmploymentAssoc.get("position_number").asText();
         }
 
         //Retrieve Position Title
         if(jeEmploymentAssoc.hasNonNull("position_title"))
         {
-            rosettaEmplAssoc.Position_Title = jeEmploymentAssoc.get("position_title").asText();
+            rosettaEmplAssoc.positionTitle = jeEmploymentAssoc.get("position_title").asText();
         }
 
         //Retrieve Relationship to Organization
         if(jeEmploymentAssoc.hasNonNull("relationship_to_organization"))
         {
-            rosettaEmplAssoc.Relationship_To_Organization = jeEmploymentAssoc.get("relationship_to_organization").asText();
+            rosettaEmplAssoc.relationshipToOrganization = jeEmploymentAssoc.get("relationship_to_organization").asText();
         }
 
         //Retrieve Employee Classification
         if(jeEmploymentAssoc.hasNonNull("employee_classification"))
         {
-            rosettaEmplAssoc.Employee_Classification = jeEmploymentAssoc.get("employee_classification").asText();
+            rosettaEmplAssoc.employeeClassification = jeEmploymentAssoc.get("employee_classification").asText();
         }
 
         //Retrieve Employee Classification Description
         if(jeEmploymentAssoc.hasNonNull("employee_classification_description"))
         {
-            rosettaEmplAssoc.Employee_Classification_Description = jeEmploymentAssoc.get("employee_classification_description").asText();
+            rosettaEmplAssoc.employeeClassificationDescription = jeEmploymentAssoc.get("employee_classification_description").asText();
         }
 
         //Retrieve Status
         if(jeEmploymentAssoc.hasNonNull("status"))
         {
-            rosettaEmplAssoc.Status = jeEmploymentAssoc.get("status").asText();
+            rosettaEmplAssoc.status = jeEmploymentAssoc.get("status").asText();
         }
 
         //Retrieve Hire Date
         if(jeEmploymentAssoc.hasNonNull("hire_date"))
         {
-            rosettaEmplAssoc.Hire_Date = jeEmploymentAssoc.get("hire_date").asText();
+            rosettaEmplAssoc.hireDate = jeEmploymentAssoc.get("hire_date").asText();
         }
 
         //Retrieve Start Date
         if(jeEmploymentAssoc.hasNonNull("start_date"))
         {
-            rosettaEmplAssoc.Start_Date = jeEmploymentAssoc.get("start_date").asText();
+            rosettaEmplAssoc.startDate = jeEmploymentAssoc.get("start_date").asText();
         }
 
         //Retrieve FTE Percentage
         if(jeEmploymentAssoc.hasNonNull("fte_percentage"))
         {
-            rosettaEmplAssoc.FTE_Percentage = jeEmploymentAssoc.get("fte_percentage").asText();
+            rosettaEmplAssoc.ftePercentage = jeEmploymentAssoc.get("fte_percentage").asText();
         }
 
         //Retrieve Joy Type ID
         if(jeEmploymentAssoc.hasNonNull("job_type_id"))
         {
-            rosettaEmplAssoc.Job_Type_ID = jeEmploymentAssoc.get("job_type_id").asText();
+            rosettaEmplAssoc.jobTypeID = jeEmploymentAssoc.get("job_type_id").asText();
         }
 
         //Retrieve Job Type Description
         if(jeEmploymentAssoc.hasNonNull("job_type_description"))
         {
-            rosettaEmplAssoc.Job_Type_Description = jeEmploymentAssoc.get("job_type_description").asText();
+            rosettaEmplAssoc.jobTypeDescription = jeEmploymentAssoc.get("job_type_description").asText();
         }
 
         //Retrieve Organization ID
         if(jeEmploymentAssoc.hasNonNull("organization_id"))
         {
-            rosettaEmplAssoc.Organization_ID = jeEmploymentAssoc.get("organization_id").asText();
+            rosettaEmplAssoc.organizationID = jeEmploymentAssoc.get("organization_id").asText();
         }
 
         //Retrieve Organization Title
         if(jeEmploymentAssoc.hasNonNull("organization_title"))
         {
-            rosettaEmplAssoc.Organization_Title = jeEmploymentAssoc.get("organization_title").asText();
+            rosettaEmplAssoc.organizationTitle = jeEmploymentAssoc.get("organization_title").asText();
         }
 
         //Retrieve Division ID
         if(jeEmploymentAssoc.hasNonNull("division_id"))
         {
-            rosettaEmplAssoc.Division_ID = jeEmploymentAssoc.get("division_id").asText();
+            rosettaEmplAssoc.divisionID = jeEmploymentAssoc.get("division_id").asText();
         }
 
         //Retrieve Division Title
         if(jeEmploymentAssoc.hasNonNull("division_title"))
         {
-            rosettaEmplAssoc.Division_Title = jeEmploymentAssoc.get("division_title").asText();
+            rosettaEmplAssoc.divisionTitle = jeEmploymentAssoc.get("division_title").asText();
         }
 
 
         //Retrieve Subdivision ID
         if(jeEmploymentAssoc.hasNonNull("subdivision_id"))
         {
-            rosettaEmplAssoc.Subdivision_ID = jeEmploymentAssoc.get("subdivision_id").asText();
+            rosettaEmplAssoc.subdivisionID = jeEmploymentAssoc.get("subdivision_id").asText();
         }
 
         //Retrieve Subdivision Title
         if(jeEmploymentAssoc.hasNonNull("subdivision_title"))
         {
-            rosettaEmplAssoc.Subdivision_Title = jeEmploymentAssoc.get("subdivision_title").asText();
+            rosettaEmplAssoc.subdivisionTitle = jeEmploymentAssoc.get("subdivision_title").asText();
         }
 
         //Retrieve Subdivision L4 ID
         if(jeEmploymentAssoc.hasNonNull("subdivision_l4_id"))
         {
-            rosettaEmplAssoc.Subdivision_L4_ID = jeEmploymentAssoc.get("subdivision_l4_id").asText();
+            rosettaEmplAssoc.subdivisionL4ID = jeEmploymentAssoc.get("subdivision_l4_id").asText();
         }
 
         //Retrieve Subdivision L4 Title
         if(jeEmploymentAssoc.hasNonNull("subdivision_l4_title"))
         {
-            rosettaEmplAssoc.Subdivision_L4_Title = jeEmploymentAssoc.get("subdivision_l4_title").asText();
+            rosettaEmplAssoc.subdivisionL4Title = jeEmploymentAssoc.get("subdivision_l4_title").asText();
         }
 
         //Retrieve Business Unit ID
         if(jeEmploymentAssoc.hasNonNull("business_unit_id"))
         {
-            rosettaEmplAssoc.Business_Unit_ID = jeEmploymentAssoc.get("business_unit_id").asText();
+            rosettaEmplAssoc.businessUnitID = jeEmploymentAssoc.get("business_unit_id").asText();
         }
 
         //Retrieve Business Unit Title
         if(jeEmploymentAssoc.hasNonNull("business_unit_title"))
         {
-            rosettaEmplAssoc.Business_Unit_Title = jeEmploymentAssoc.get("business_unit_title").asText();
+            rosettaEmplAssoc.businessUnitTitle = jeEmploymentAssoc.get("business_unit_title").asText();
         }
 
         //Retrieve Department ID
         if(jeEmploymentAssoc.hasNonNull("department_id"))
         {
-            rosettaEmplAssoc.Department_ID = jeEmploymentAssoc.get("department_id").asText();
+            rosettaEmplAssoc.departmentID = jeEmploymentAssoc.get("department_id").asText();
         }
 
         //Retrieve Department Title
         if(jeEmploymentAssoc.hasNonNull("department_title"))
         {
-            rosettaEmplAssoc.Department_Title = jeEmploymentAssoc.get("department_title").asText();
+            rosettaEmplAssoc.departmentTitle = jeEmploymentAssoc.get("department_title").asText();
         }
 
         //Retrieve Department Short Title
         if(jeEmploymentAssoc.hasNonNull("department_short_title"))
         {
-            rosettaEmplAssoc.Department_Short_Title = jeEmploymentAssoc.get("department_short_title").asText();
+            rosettaEmplAssoc.departmentShortTitle = jeEmploymentAssoc.get("department_short_title").asText();
         }
 
         //Retrieve Reports to Position
         if(jeEmploymentAssoc.hasNonNull("reports_to_position"))
         {
-            rosettaEmplAssoc.Reports_To_Position = jeEmploymentAssoc.get("reports_to_position").asText();
+            rosettaEmplAssoc.reportsToPosition = jeEmploymentAssoc.get("reports_to_position").asText();
         }
 
         //Retrieve Reports To IAM ID
         if(jeEmploymentAssoc.hasNonNull("reports_to_iam_id"))
         {
-            rosettaEmplAssoc.Reports_To_IAM_ID = jeEmploymentAssoc.get("reports_to_iam_id").asText();
+            rosettaEmplAssoc.reportsToIAMID = jeEmploymentAssoc.get("reports_to_iam_id").asText();
         }
 
         //Retrieve Reports to Employee ID
         if(jeEmploymentAssoc.hasNonNull("reports_to_employee_id"))
         {
-            rosettaEmplAssoc.Reports_To_Employee_ID = jeEmploymentAssoc.get("reports_to_employee_id").asText();
+            rosettaEmplAssoc.reportsToEmployeeID = jeEmploymentAssoc.get("reports_to_employee_id").asText();
         }
 
         //Retrieve Is Health Position
         if(jeEmploymentAssoc.hasNonNull("is_health_position"))
         {
-            rosettaEmplAssoc.Is_Health_Position = jeEmploymentAssoc.get("is_health_position").asText();
+            rosettaEmplAssoc.isHealthPosition = jeEmploymentAssoc.get("is_health_position").asText();
         }
 
         //Retrieve Is Campus Position
         if(jeEmploymentAssoc.hasNonNull("is_campus_position"))
         {
-            rosettaEmplAssoc.Is_Campus_Position = jeEmploymentAssoc.get("is_campus_position").asText();
+            rosettaEmplAssoc.isCampusPosition = jeEmploymentAssoc.get("is_campus_position").asText();
         }
 
 
@@ -559,13 +559,13 @@ public class RosettaAPIWorker {
         //Retrieve Display Name
         if(jePeople.hasNonNull("displayname"))
         {
-            rosettaPerson.DisplayName = jePeople.get("displayname").asText();
+            rosettaPerson.displayName = jePeople.get("displayname").asText();
         }
 
         //Retrieve IAM ID
         if(jePeople.hasNonNull("iam_id"))
         {
-            rosettaPerson.IAM_ID = jePeople.get("iam_id").asText();
+            rosettaPerson.iamID = jePeople.get("iam_id").asText();
         }
 
         //Retrieve IDs
@@ -578,25 +578,25 @@ public class RosettaAPIWorker {
             //Retrieve IAM ID
             if(jeIDs.hasNonNull("iam_id"))
             {
-                rosettaPerson.IAM_ID = jeIDs.get("iam_id").asText();
+                rosettaPerson.iamID = jeIDs.get("iam_id").asText();
             }
 
             //Retrieve Login ID
             if(jeIDs.hasNonNull("login_id"))
             {
-                rosettaPerson.Login_ID = jeIDs.get("login_id").asText();
+                rosettaPerson.loginID = jeIDs.get("login_id").asText();
             }
 
             //Retrieve Mothra ID
             if(jeIDs.hasNonNull("mothra_id"))
             {
-                rosettaPerson.Mothra_ID = jeIDs.get("mothra_id").asText();
+                rosettaPerson.mothraID = jeIDs.get("mothra_id").asText();
             }
 
             //Retrieve Employee ID
             if(jeIDs.hasNonNull("employee_id"))
             {
-                rosettaPerson.Employee_ID = jeIDs.get("employee_id").asText();
+                rosettaPerson.employeeID = jeIDs.get("employee_id").asText();
             }
 
             //Retrieve Mail IDs
@@ -608,13 +608,13 @@ public class RosettaAPIWorker {
                 //Check for Campus Mail ID
                 if(jeIDsMail.hasNonNull("campus"))
                 {
-                    rosettaPerson.Mail_ID_Campus = jeIDsMail.get("campus").asText();
+                    rosettaPerson.mailIDCampus = jeIDsMail.get("campus").asText();
                 }
 
                 //Check for Health Mail ID
                 if(jeIDsMail.hasNonNull("health"))
                 {
-                    rosettaPerson.Mail_ID_Health = jeIDsMail.get("health").asText();
+                    rosettaPerson.mailIDHealth = jeIDsMail.get("health").asText();
                 }
 
             }
@@ -630,13 +630,13 @@ public class RosettaAPIWorker {
             //Check for Lived First Name
             if(jeNames.hasNonNull("lived_first_name"))
             {
-                rosettaPerson.Lived_First_Name = jeNames.get("lived_first_name").asText();
+                rosettaPerson.livedFirstName = jeNames.get("lived_first_name").asText();
             }
 
             //Check for Lived Last Name
             if(jeNames.hasNonNull("lived_last_name"))
             {
-                rosettaPerson.Lived_Last_Name = jeNames.get("lived_last_name").asText();
+                rosettaPerson.livedLastName = jeNames.get("lived_last_name").asText();
             }
 
         }//End of Names Checks
@@ -650,13 +650,13 @@ public class RosettaAPIWorker {
             //Check for Campus Email Address
             if(jeEmailAddress.hasNonNull("campus"))
             {
-                rosettaPerson.Email_Address_Campus = jeEmailAddress.get("campus").asText();
+                rosettaPerson.emailAddressCampus = jeEmailAddress.get("campus").asText();
             }
 
             //Check for Health Email Address
             if(jeEmailAddress.hasNonNull("health"))
             {
-                rosettaPerson.Email_Address_Health = jeEmailAddress.get("health").asText();
+                rosettaPerson.emailAddressHealth = jeEmailAddress.get("health").asText();
             }
 
         }//End of Email Addresses
@@ -670,25 +670,25 @@ public class RosettaAPIWorker {
             //Retrieve Primary Provisioning Status
             if(jeProvisioningStatus.hasNonNull("primary"))
             {
-                rosettaPerson.Provisioning_Status_Primary = jeProvisioningStatus.get("primary").asText();
+                rosettaPerson.provisioningStatusPrimary = jeProvisioningStatus.get("primary").asText();
             }
 
             //Retrieve Employee Provisioning Status
             if(jeProvisioningStatus.hasNonNull("employee"))
             {
-                rosettaPerson.Provisioning_Status_Employee = jeProvisioningStatus.get("employee").asText();
+                rosettaPerson.provisioningStatusEmployee = jeProvisioningStatus.get("employee").asText();
             }
 
             //Retrieve Faculty Provisioning Status
             if(jeProvisioningStatus.hasNonNull("faculty"))
             {
-                rosettaPerson.Provisioning_Status_Faculty = jeProvisioningStatus.get("faculty").asText();
+                rosettaPerson.provisioningStatusFaculty = jeProvisioningStatus.get("faculty").asText();
             }
 
             //Retrieve Student Provisioning Status
             if(jeProvisioningStatus.hasNonNull("student"))
             {
-                rosettaPerson.Provisioning_Status_Student = jeProvisioningStatus.get("student").asText();
+                rosettaPerson.provisioningStatusStudent = jeProvisioningStatus.get("student").asText();
             }
 
 
@@ -708,11 +708,11 @@ public class RosettaAPIWorker {
                 //Confirm Employee Affiliation
                 if(jeAffiliation.get("employee").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Affiliation_Employee = true;
+                    rosettaPerson.affiliationEmployee = true;
                 }
                 else
                 {
-                    rosettaPerson.Affiliation_Employee = false;
+                    rosettaPerson.affiliationEmployee = false;
                 }
                 
             }
@@ -724,11 +724,11 @@ public class RosettaAPIWorker {
                 //Confirm Faculty Affiliation
                 if(jeAffiliation.get("faculty").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Affiliation_Faculty = true;
+                    rosettaPerson.affiliationFaculty = true;
                 }
                 else
                 {
-                    rosettaPerson.Affiliation_Faculty = false;
+                    rosettaPerson.affiliationFaculty = false;
                 }
                 
             }
@@ -740,11 +740,11 @@ public class RosettaAPIWorker {
                 //Confirm Temporary Affiliation
                 if(jeAffiliation.get("temporary_affiliate").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Affiliation_Temporary_Affiliate = true;
+                    rosettaPerson.affiliationTemporaryAffiliate = true;
                 }
                 else
                 {
-                    rosettaPerson.Affiliation_Temporary_Affiliate = false;
+                    rosettaPerson.affiliationTemporaryAffiliate = false;
                 }
                 
             }
@@ -756,11 +756,11 @@ public class RosettaAPIWorker {
                 //Confirm Student Affiliation
                 if(jeAffiliation.get("student").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Affiliation_Student = true;
+                    rosettaPerson.affiliationStudent = true;
                 }
                 else
                 {
-                    rosettaPerson.Affiliation_Student = false;
+                    rosettaPerson.affiliationStudent = false;
                 }
                 
             }
@@ -772,11 +772,11 @@ public class RosettaAPIWorker {
                 //Confirm Student Affiliation
                 if(jeAffiliation.get("student_applicant").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Affiliation_Student_Applicant = true;
+                    rosettaPerson.affiliationStudentApplicant = true;
                 }
                 else
                 {
-                    rosettaPerson.Affiliation_Student_Applicant = false;
+                    rosettaPerson.affiliationStudentApplicant = false;
                 }
                 
             }
@@ -788,11 +788,11 @@ public class RosettaAPIWorker {
                 //Confirm Health Affiliation
                 if(jeAffiliation.get("health_affiliate").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Affiliation_Health_Affiliate = true;
+                    rosettaPerson.affiliationHealthAffiliate = true;
                 }
                 else
                 {
-                    rosettaPerson.Affiliation_Health_Affiliate = false;
+                    rosettaPerson.affiliationHealthAffiliate = false;
                 }
                 
             }
@@ -812,11 +812,11 @@ public class RosettaAPIWorker {
                 //Confirm Academic Status
                 if(jeEmploymentStatus.get("is_academic").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Employment_Is_Academic = true;
+                    rosettaPerson.employmentIsAcademic = true;
                 }
                 else
                 {
-                    rosettaPerson.Employment_Is_Academic = false;
+                    rosettaPerson.employmentIsAcademic = false;
                 }
                 
             }
@@ -828,11 +828,11 @@ public class RosettaAPIWorker {
                 //Confirm Academic Senate Status
                 if(jeEmploymentStatus.get("is_academic_senate").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Employment_Is_Academic_Senate = true;
+                    rosettaPerson.employmentIsAcademicSenate = true;
                 }
                 else
                 {
-                    rosettaPerson.Employment_Is_Academic_Senate = false;
+                    rosettaPerson.employmentIsAcademicSenate = false;
                 }
                 
             }
@@ -844,11 +844,11 @@ public class RosettaAPIWorker {
                 //Confirm Academic Federation Status
                 if(jeEmploymentStatus.get("is_academic_federation").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Employment_Is_Academic_Federation = true;
+                    rosettaPerson.employmentIsAcademicFederation = true;
                 }
                 else
                 {
-                    rosettaPerson.Employment_Is_Academic_Federation = false;
+                    rosettaPerson.employmentIsAcademicFederation = false;
                 }
                 
             }
@@ -861,11 +861,11 @@ public class RosettaAPIWorker {
                 //Confirm Faculty Status
                 if(jeEmploymentStatus.get("is_faculty").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Employment_Is_Faculty = true;
+                    rosettaPerson.employmentIsFaculty = true;
                 }
                 else
                 {
-                    rosettaPerson.Employment_Is_Faculty = false;
+                    rosettaPerson.employmentIsFaculty = false;
                 }
                 
             }
@@ -877,11 +877,11 @@ public class RosettaAPIWorker {
                 //Confirm Teaching Faculty Status
                 if(jeEmploymentStatus.get("is_teaching_faculty").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Employment_Is_Teaching_Faculty = true;
+                    rosettaPerson.employmentIsTeachingFaculty = true;
                 }
                 else
                 {
-                    rosettaPerson.Employment_Is_Teaching_Faculty = false;
+                    rosettaPerson.employmentIsTeachingFaculty = false;
                 }
                 
             }
@@ -893,11 +893,11 @@ public class RosettaAPIWorker {
                 //Confirm Ladder Rank Status
                 if(jeEmploymentStatus.get("is_ladder_rank").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Employment_Is_Ladder_Rank = true;
+                    rosettaPerson.employmentIsLadderRank = true;
                 }
                 else
                 {
-                    rosettaPerson.Employment_Is_Ladder_Rank = false;
+                    rosettaPerson.employmentIsLadderRank = false;
                 }
                 
             }
@@ -909,11 +909,11 @@ public class RosettaAPIWorker {
                 //Confirm Without Salary Status
                 if(jeEmploymentStatus.get("is_without_salary").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Employment_Is_Without_Salary = true;
+                    rosettaPerson.employmentIsWithoutSalary = true;
                 }
                 else
                 {
-                    rosettaPerson.Employment_Is_Without_Salary = false;
+                    rosettaPerson.employmentIsWithoutSalary = false;
                 }
                 
             }
@@ -925,11 +925,11 @@ public class RosettaAPIWorker {
                 //Confirm MSP Status
                 if(jeEmploymentStatus.get("is_msp").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Employment_Is_MSP = true;
+                    rosettaPerson.employmentIsMSP = true;
                 }
                 else
                 {
-                    rosettaPerson.Employment_Is_MSP = false;
+                    rosettaPerson.employmentIsMSP = false;
                 }
                 
             }
@@ -941,11 +941,11 @@ public class RosettaAPIWorker {
                 //Confirm SSP Status
                 if(jeEmploymentStatus.get("is_ssp").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Employment_Is_SSP = true;
+                    rosettaPerson.employmentIsSSP = true;
                 }
                 else
                 {
-                    rosettaPerson.Employment_Is_SSP = false;
+                    rosettaPerson.employmentIsSSP = false;
                 }
                 
             }
@@ -957,11 +957,11 @@ public class RosettaAPIWorker {
                 //Confirm Manager Status
                 if(jeEmploymentStatus.get("is_manager").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Employment_Is_Manager = true;
+                    rosettaPerson.employmentIsManager = true;
                 }
                 else
                 {
-                    rosettaPerson.Employment_Is_Manager = false;
+                    rosettaPerson.employmentIsManager = false;
                 }
                 
             }
@@ -973,11 +973,11 @@ public class RosettaAPIWorker {
                 //Confirm Campus Employee Status
                 if(jeEmploymentStatus.get("is_campus_employee").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Employment_Is_Campus_Employee = true;
+                    rosettaPerson.employmentIsCampusEmployee = true;
                 }
                 else
                 {
-                    rosettaPerson.Employment_Is_Campus_Employee = false;
+                    rosettaPerson.employmentIsCampusEmployee = false;
                 }
                 
             }
@@ -989,11 +989,11 @@ public class RosettaAPIWorker {
                 //Confirm Health Employee Status
                 if(jeEmploymentStatus.get("is_health_employee").asText().toUpperCase().equals("Y"))
                 {
-                    rosettaPerson.Employment_Is_Health_Employee = true;
+                    rosettaPerson.employmentIsHealthEmployee = true;
                 }
                 else
                 {
-                    rosettaPerson.Employment_Is_Health_Employee = false;
+                    rosettaPerson.employmentIsHealthEmployee = false;
                 }
                 
             }
@@ -1014,11 +1014,11 @@ public class RosettaAPIWorker {
             }
 
             //Update Employee Associations with IAM ID
-            if(rosettaPerson.IAM_ID.isEmpty() == false && rosettaPerson.lEmployeeAssociations.size() > 0)
+            if(rosettaPerson.iamID.isEmpty() == false && rosettaPerson.lEmployeeAssociations.size() > 0)
             {
                 for(RosettaEmployeeAssociation rea : rosettaPerson.lEmployeeAssociations)
                 {
-                    rea.IAM_ID = rosettaPerson.IAM_ID;
+                    rea.iamID = rosettaPerson.iamID;
                 }
             }
 
@@ -1066,12 +1066,12 @@ public class RosettaAPIWorker {
                 try(HttpClient raHttpClient  = HttpClient.newHttpClient())
                 {
                     //Var for Accounts URL
-                    String peopleURL =  Base_Url + "people?"+ searchBy.toString() + "=" + searchTerm + "&offset=" + Integer.toString(nSrchRsltOffset) + "&limit=" + Integer.toString(nSrchRsltLimit) + "&count=true"; //&affiliationState=all
+                    String peopleURL =  baseUrl + "people?"+ searchBy.toString() + "=" + searchTerm + "&offset=" + Integer.toString(nSrchRsltOffset) + "&limit=" + Integer.toString(nSrchRsltLimit) + "&count=true"; //&affiliationState=all
 
                     //Build Request for People Lookup
                     HttpRequest peopleHttpRequest = HttpRequest.newBuilder()
                             .uri(URI.create(peopleURL))
-                            .header("Authorization","Bearer " + _OAuth_Token)
+                            .header("Authorization","Bearer " + _oauthToken)
                             .GET()
                             .build();
 
@@ -1170,12 +1170,12 @@ public class RosettaAPIWorker {
                 try(HttpClient raHttpClient  = HttpClient.newHttpClient())
                 {
                     //Var for Student Associations URL
-                    String studentURL =  Base_Url + "student-association?"+ searchBy.toString() + "=" + searchTerm + "&offset=" + Integer.toString(nSrchRsltOffset) + "&limit=" + Integer.toString(nSrchRsltLimit) + "&count=true";
+                    String studentURL =  baseUrl + "student-association?"+ searchBy.toString() + "=" + searchTerm + "&offset=" + Integer.toString(nSrchRsltOffset) + "&limit=" + Integer.toString(nSrchRsltLimit) + "&count=true";
 
                     //Build Request for Student Associations Lookup
                     HttpRequest studentHttpRequest = HttpRequest.newBuilder()
                             .uri(URI.create(studentURL))
-                            .header("Authorization","Bearer " + _OAuth_Token)
+                            .header("Authorization","Bearer " + _oauthToken)
                             .GET()
                             .build();
 
@@ -1274,12 +1274,12 @@ public class RosettaAPIWorker {
                 try(HttpClient raHttpClient  = HttpClient.newHttpClient())
                 {
                     //Var for Employee Associations URL
-                    String employeeURL =  Base_Url + "employee-association?"+ searchBy.toString() + "=" + searchTerm + "&offset=" + Integer.toString(nSrchRsltOffset) + "&limit=" + Integer.toString(nSrchRsltLimit) + "&count=true";
+                    String employeeURL =  baseUrl + "employee-association?"+ searchBy.toString() + "=" + searchTerm + "&offset=" + Integer.toString(nSrchRsltOffset) + "&limit=" + Integer.toString(nSrchRsltLimit) + "&count=true";
 
                     //Build Request for Employee Associations Lookup
                     HttpRequest employeeHttpRequest = HttpRequest.newBuilder()
                             .uri(URI.create(employeeURL))
-                            .header("Authorization","Bearer " + _OAuth_Token)
+                            .header("Authorization","Bearer " + _oauthToken)
                             .GET()
                             .build();
 
@@ -1371,12 +1371,12 @@ public class RosettaAPIWorker {
             try(HttpClient raHttpClient  = HttpClient.newHttpClient())
             {
                 //Var for Departments URL
-                String departmentsURL =  Base_Url + "employee-association/departments?limit=" + Integer.toString(nSrchRsltLimit);
+                String departmentsURL =  baseUrl + "employee-association/departments?limit=" + Integer.toString(nSrchRsltLimit);
 
                 //Build Request for Departments Lookup
                 HttpRequest departmentsHttpRequest = HttpRequest.newBuilder()
                         .uri(URI.create(departmentsURL))
-                        .header("Authorization","Bearer " + _OAuth_Token)
+                        .header("Authorization","Bearer " + _oauthToken)
                         .GET()
                         .build();
 
@@ -1425,12 +1425,12 @@ public class RosettaAPIWorker {
             try(HttpClient raHttpClient  = HttpClient.newHttpClient())
             {
                 //Var for JobTypeIDs URL
-                String jobtypeidsURL =  Base_Url + "employee-association/jobtypeids?";
+                String jobtypeidsURL =  baseUrl + "employee-association/jobtypeids?";
 
                 //Build Request for Job Type IDs Lookup
                 HttpRequest jobtypeidsHttpRequest = HttpRequest.newBuilder()
                         .uri(URI.create(jobtypeidsURL))
-                        .header("Authorization","Bearer " + _OAuth_Token)
+                        .header("Authorization","Bearer " + _oauthToken)
                         .GET()
                         .build();
 

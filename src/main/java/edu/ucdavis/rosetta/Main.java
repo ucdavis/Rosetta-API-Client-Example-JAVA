@@ -106,7 +106,7 @@ public class Main
         {
             //For Readability
             System.out.println(" ");
-            System.out.println("=========== " + rosettaPrsn.DisplayName + " =============");
+            System.out.println("=========== " + rosettaPrsn.displayName + " =============");
             System.out.println(" ");
 
             //Pull Rosetta Person Class
@@ -230,7 +230,7 @@ public class Main
         {
             //For Readability
             System.out.println(" ");
-            System.out.println("=========== " + rsa.IAM_ID + " =============");
+            System.out.println("=========== " + rsa.iamID + " =============");
             System.out.println(" ");
 
             //Pull Rosetta Employee Association Class
@@ -282,7 +282,7 @@ public class Main
         {
             //For Readability
             System.out.println(" ");
-            System.out.println("=========== " + rea.Employee_ID + " =============");
+            System.out.println("=========== " + rea.employeeID + " =============");
             System.out.println(" ");
 
             //Pull Rosetta Employee Association Class
@@ -339,7 +339,7 @@ public class Main
             String rptFileName = "Departments-" + ldt.format(dtFormatter) + ".csv";
 
             //Initiate Writer for Export File
-            try(BufferedWriter bfWriter = new BufferedWriter(new FileWriter(rosettaAPIWrkr.Export_Location + rptFileName)))
+            try(BufferedWriter bfWriter = new BufferedWriter(new FileWriter(rosettaAPIWrkr.exportLocation + rptFileName)))
             {   
                 //Write Header Row
                 bfWriter.write("Department_ID,Department_Title,Department_Short_Title,Subdivision_ID,Subdivision_Title,Subdivision_L4_ID,Subdivision_L4_Title,Division_ID,Division_Title,Organization_ID,Organization_Title,");
@@ -349,17 +349,17 @@ public class Main
                 for(RosettaDepartment rdept : lRosettaDepartments)
                 {
                     //Write Out Values to Reporting File
-                    bfWriter.write(escapeCsv(rdept.Department_ID));
-                    bfWriter.write(escapeCsv(rdept.Department_Title));
-                    bfWriter.write(escapeCsv(rdept.Department_Short_Title));
-                    bfWriter.write(escapeCsv(rdept.Subdivision_ID));
-                    bfWriter.write(escapeCsv(rdept.Subdivision_Title));
-                    bfWriter.write(escapeCsv(rdept.Subdivision_L4_ID));
-                    bfWriter.write(escapeCsv(rdept.Subdivision_L4_Title));
-                    bfWriter.write(escapeCsv(rdept.Division_ID));
-                    bfWriter.write(escapeCsv(rdept.Division_Title));
-                    bfWriter.write(escapeCsv(rdept.Organization_ID));
-                    bfWriter.write(escapeCsv(rdept.Organization_Title));
+                    bfWriter.write(escapeCsv(rdept.departmentID));
+                    bfWriter.write(escapeCsv(rdept.departmentTitle));
+                    bfWriter.write(escapeCsv(rdept.departmentShortTitle));
+                    bfWriter.write(escapeCsv(rdept.subdivisionID));
+                    bfWriter.write(escapeCsv(rdept.subdivisionTitle));
+                    bfWriter.write(escapeCsv(rdept.subdivisionL4ID));
+                    bfWriter.write(escapeCsv(rdept.subdivisionL4Title));
+                    bfWriter.write(escapeCsv(rdept.divisionID));
+                    bfWriter.write(escapeCsv(rdept.divisionTitle));
+                    bfWriter.write(escapeCsv(rdept.organizationID));
+                    bfWriter.write(escapeCsv(rdept.organizationTitle));
                     bfWriter.newLine();
                 }
 
@@ -379,7 +379,7 @@ public class Main
             {
                 //For Readability
                 System.out.println(" ");
-                System.out.println("=========== " + rsd.Department_ID + " =============");
+                System.out.println("=========== " + rsd.departmentID + " =============");
                 System.out.println(" ");
 
                 //Pull Rosetta Department Class
@@ -434,7 +434,7 @@ public class Main
             String rptFileName = "JobTypeIDs-" + ldt.format(dtFormatter) + ".csv";
 
             //Initiate Writer for Export File
-            try(BufferedWriter bfWriter = new BufferedWriter(new FileWriter(rosettaAPIWrkr.Export_Location + rptFileName)))
+            try(BufferedWriter bfWriter = new BufferedWriter(new FileWriter(rosettaAPIWrkr.exportLocation + rptFileName)))
             {   
                 //Write Header Row
                 bfWriter.write("Job_Type_ID,Job_Type_Description,");
@@ -444,8 +444,8 @@ public class Main
                 for(RosettaJobTypeID rjtid : lRosettaJobTypeIDs)
                 {
                     //Write Out Values to Reporting File
-                    bfWriter.write(escapeCsv(rjtid.Job_Type_ID));
-                    bfWriter.write(escapeCsv(rjtid.Job_Type_Description));
+                    bfWriter.write(escapeCsv(rjtid.jobTypeID));
+                    bfWriter.write(escapeCsv(rjtid.jobTypeDescription));
                     bfWriter.newLine();
                 }
 
