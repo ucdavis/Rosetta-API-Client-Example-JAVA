@@ -639,6 +639,12 @@ public class RosettaAPIWorker {
                 rosettaPerson.livedLastName = jeNames.get("lived_last_name").asText();
             }
 
+            //Check for Lived Pronouns
+            if(jeNames.hasNonNull("lived_pronouns"))
+            {
+                rosettaPerson.livedPronouns = jeNames.get("lived_pronouns").asText();
+            }
+
         }//End of Names Checks
 
         //Retrieve Email Addresses

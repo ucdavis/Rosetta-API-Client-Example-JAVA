@@ -15,6 +15,7 @@ public class RosettaPerson
     public String emailAddressHealth = "";
     public String livedFirstName = "";
     public String livedLastName = "";
+    public String livedPronouns = "";
     public String displayName = "";
     public String provisioningStatusPrimary = "";
     public String provisioningStatusEmployee = "";
